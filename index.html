@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mixfood — Restaurante &amp; Cafetería</title>
+<style>
+
+  :root{
+    --ink:#1c1410;
+    --ink-soft:#3a2c22;
+    --cream:#faf3e8;
+    --paper:#fffaf2;
+    --line:#e4d8c6;
+    --accent:#ff5a1f;
+    --accent-deep:#c73e12;
+    --gold:#c9902f;
+    --wall:#d97a63;
+    --muted:#7a6a5a;
+    --shadow: 0 18px 40px -20px rgba(28,20,16,0.35);
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#f4e9da;
+      --ink-soft:#d9c7b2;
+      --cream:#181110;
+      --paper:#211714;
+      --line:#3a2a22;
+      --accent:#ff6b35;
+      --accent-deep:#ff8f5c;
+      --gold:#e3ac52;
+      --wall:#7a3d31;
+      --muted:#a3897a;
+      --shadow: 0 18px 40px -20px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#f4e9da;
+    --ink-soft:#d9c7b2;
+    --cream:#181110;
+    --paper:#211714;
+    --line:#3a2a22;
+    --accent:#ff6b35;
+    --accent-deep:#ff8f5c;
+    --gold:#e3ac52;
+    --wall:#7a3d31;
+    --muted:#a3897a;
+    --shadow: 0 18px 40px -20px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:Rockwell,"Rockwell Nova","Roboto Slab",Georgia,"Times New Roman",serif;
+    font-weight:700;
+    text-wrap:balance;
+    margin:0;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(1.25rem,4vw,2.5rem);}
+  .eyebrow{
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:700;
+  }
+  ::selection{background:var(--accent);color:#fff;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--cream) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:0.85rem;padding-bottom:0.85rem;
+    gap:0.9rem;
+  }
+  .brand{
+    display:flex;align-items:center;gap:0.6rem;
+    font-family:Rockwell,"Roboto Slab",Georgia,serif;
+    font-weight:700;font-size:1.15rem;letter-spacing:0.01em;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .brand .dot{color:var(--accent);}
+  .topbar-right{display:flex;align-items:center;gap:0.9rem;}
+  .topnav{display:flex;gap:1.5rem;font-size:0.9rem;}
+  .topnav a{font-weight:600;color:var(--ink-soft);}
+  .topnav a:hover{color:var(--accent);}
+
+  .lang-switch{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;}
+  .lang-btn{
+    appearance:none;border:0;background:transparent;color:var(--muted);
+    font-size:0.72rem;font-weight:700;letter-spacing:0.04em;
+    padding:0.4rem 0.65rem;cursor:pointer;font-family:inherit;
+  }
+  .lang-btn + .lang-btn{border-left:1px solid var(--line);}
+  .lang-btn.active{background:var(--accent);color:#fff;}
+  .lang-btn:hover:not(.active){color:var(--accent);}
+
+  .top-cta{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    background:var(--accent);color:#fff;
+    padding:0.55rem 1.1rem;border-radius:999px;
+    font-weight:700;font-size:0.85rem;
+    white-space:nowrap;
+    box-shadow:0 8px 18px -8px rgba(255,90,31,0.6);
+  }
+  .top-cta:hover{background:var(--accent-deep);}
+
+  @media (max-width:760px){ .topnav{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% -10%, color-mix(in srgb, var(--accent) 25%, transparent), transparent),
+      var(--ink);
+    color:var(--cream);
+    overflow:hidden;
+  }
+  .hero-inner{
+    padding:clamp(3.5rem,9vw,6.5rem) 0 clamp(3rem,7vw,5rem);
+    position:relative;z-index:1;
+  }
+  .hero .eyebrow{color:var(--accent);}
+  .hero h1{
+    font-size:clamp(2.4rem,7vw,4.6rem);
+    line-height:0.98;
+    margin-top:0.6rem;
+    color:var(--cream);
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:normal;color:var(--accent);
+  }
+  .hero p.lede{
+    max-width:38em;
+    font-size:1.08rem;
+    color:color-mix(in srgb, var(--cream) 78%, transparent);
+    margin-top:1.1rem;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:0.6rem 0.9rem;
+    margin-top:1.6rem;
+    font-size:0.85rem;
+  }
+  .pill{
+    border:1px solid color-mix(in srgb, var(--cream) 25%, transparent);
+    color:color-mix(in srgb, var(--cream) 85%, transparent);
+    padding:0.4rem 0.85rem;border-radius:999px;
+    display:inline-flex;align-items:center;gap:0.5rem;
+  }
+  .pill .dotlive{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;flex:none;}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:2rem;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;
+    padding:0.85rem 1.5rem;border-radius:999px;
+    font-weight:700;font-size:0.95rem;
+    transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 24px -10px rgba(255,90,31,0.7);}
+  .btn-primary:hover{background:var(--accent-deep);}
+  .btn-ghost{border:1px solid color-mix(in srgb, var(--cream) 35%, transparent);color:var(--cream);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-outline{border:1px solid var(--line);color:var(--ink);}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+
+  @media (max-width:520px){
+    .hero-ctas .btn{flex:1 1 auto;}
+  }
+
+  /* marquee strip */
+  .strip{
+    background:var(--accent);
+    color:#1c0d04;
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid color-mix(in srgb, #000 15%, transparent);
+    border-bottom:1px solid color-mix(in srgb, #000 15%, transparent);
+  }
+  .strip-track{
+    display:inline-flex;
+    animation:scroll 32s linear infinite;
+  }
+  .strip span{
+    display:inline-flex;align-items:center;
+    padding:0.6rem 1.6rem;
+    font-weight:800;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-size:0.85rem;
+  }
+  .strip span::after{content:"•";margin-left:1.6rem;opacity:.5;}
+  @keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .strip-track{animation:none;}
+    .strip{overflow-x:auto;}
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:clamp(3.2rem,7vw,5.5rem) 0;}
+  .section-head{max-width:38em;margin-bottom:2.4rem;}
+  .section-head h2{
+    font-size:clamp(1.7rem,3.4vw,2.4rem);
+    margin-top:0.5rem;
+    text-transform:uppercase;
+  }
+  .section-head p{color:var(--muted);margin-top:0.7rem;font-size:1.02rem;}
+
+  /* about */
+  .about{max-width:44em;}
+  .about p{margin-top:1rem;color:var(--ink-soft);}
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.8rem;}
+  .stat{border-top:2px solid var(--accent);padding-top:0.6rem;}
+  .stat b{display:block;font-size:1.5rem;font-family:Rockwell,"Roboto Slab",serif;}
+  .stat span{font-size:0.8rem;color:var(--muted);}
+
+  .badges{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.4rem;}
+  .badge{
+    font-size:0.78rem;font-weight:700;letter-spacing:0.03em;
+    border:1px solid var(--line);padding:0.4rem 0.8rem;border-radius:999px;
+    color:var(--ink-soft);
+  }
+  .photo-note{
+    margin-top:1.8rem;font-size:0.88rem;color:var(--muted);font-style:italic;
+  }
+
+  /* menu */
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.6rem 2.2rem;}
+  .menu-card h3{
+    font-size:1.05rem;text-transform:uppercase;letter-spacing:0.03em;
+    color:var(--accent);
+    padding-bottom:0.5rem;border-bottom:2px solid var(--line);
+  }
+  .menu-item{
+    display:flex;justify-content:space-between;gap:1rem;
+    padding:0.65rem 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .menu-item:last-child{border-bottom:none;}
+  .menu-item .name{font-weight:600;display:block;}
+  .menu-item .desc{display:block;color:var(--muted);font-size:0.85rem;margin-top:0.15rem;font-weight:400;}
+  .menu-item .price{
+    font-variant-numeric:tabular-nums;
+    font-weight:700;white-space:nowrap;color:var(--ink);
+  }
+  .menu-note{
+    margin-top:2rem;font-size:0.88rem;color:var(--muted);
+    border-left:3px solid var(--gold);padding-left:0.9rem;
+  }
+
+  /* hours + location */
+  .info-grid{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.6rem;
+  }
+  @media (max-width:820px){.info-grid{grid-template-columns:1fr;}}
+  .info-card{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:1.6rem;box-shadow:var(--shadow);
+  }
+  .info-card h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.9rem;}
+  .hours-row{display:flex;justify-content:space-between;font-size:0.92rem;padding:0.35rem 0;}
+  .hours-row.today{font-weight:700;color:var(--accent);}
+  .hours-row span:first-child{color:var(--muted);}
+  .hours-row.today span:first-child{color:var(--accent);}
+  .info-card p{margin:0.3rem 0;font-size:0.92rem;}
+  .info-card a.link{color:var(--accent);font-weight:600;}
+
+  /* reviews */
+  .reviews-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  .rating-badge{display:flex;align-items:center;gap:0.8rem;}
+  .rating-badge b{font-size:2.2rem;font-family:Rockwell,serif;}
+  .stars{color:var(--gold);letter-spacing:0.1em;font-size:1.1rem;}
+  .review-scroll{
+    display:flex;gap:1.2rem;overflow-x:auto;padding:0.5rem 0 1rem;
+    scroll-snap-type:x mandatory;
+  }
+  .review-card{
+    flex:0 0 auto;width:min(320px,80vw);
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:1.4rem;scroll-snap-align:start;
+    box-shadow:var(--shadow);
+  }
+  .review-card .stars{display:block;margin-bottom:0.6rem;}
+  .review-card p{font-size:0.94rem;color:var(--ink-soft);margin:0;}
+  .review-card footer{margin-top:0.9rem;font-size:0.82rem;color:var(--muted);font-weight:600;}
+
+  /* social + order */
+  .social-order{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;
+  }
+  @media (max-width:780px){.social-order{grid-template-columns:1fr;}}
+  .panel{
+    border-radius:16px;padding:2rem;box-shadow:var(--shadow);
+  }
+  .panel-dark{
+    background:var(--ink);color:var(--cream);
+  }
+  .panel-dark .muted{color:color-mix(in srgb, var(--cream) 70%, transparent);}
+  .panel-outline{
+    background:var(--paper);border:1px solid var(--line);
+  }
+  .panel h3{font-size:1.3rem;text-transform:uppercase;margin-bottom:0.6rem;}
+  .panel p{margin-top:0.5rem;font-size:0.95rem;}
+  .panel-actions{display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:1.3rem;}
+  .hint{margin-top:1rem;font-size:0.8rem;color:var(--muted);}
+  .panel-dark .hint{color:color-mix(in srgb, var(--cream) 55%, transparent);}
+
+  .ig-handle{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    margin-top:1.2rem;font-weight:700;color:var(--accent);
+  }
+
+  /* map */
+  .map-block{margin-top:2.5rem;}
+  .map-frame{
+    border-radius:14px;overflow:hidden;border:1px solid var(--line);
+    aspect-ratio:16/6;
+  }
+  .map-frame iframe{width:100%;height:100%;border:0;display:block;}
+  @media (max-width:600px){ .map-frame{aspect-ratio:4/5;} }
+
+  /* footer */
+  footer.site{
+    background:var(--ink);color:color-mix(in srgb, var(--cream) 75%, transparent);
+    padding:2.6rem 0 1.6rem;
+  }
+  footer.site .wrap{
+    display:flex;flex-direction:column;gap:1.2rem;
+  }
+  .foot-top{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+    font-size:0.85rem;
+  }
+  .foot-top .brand{color:var(--cream);}
+  .foot-links{display:flex;gap:1.4rem;flex-wrap:wrap;}
+  .demo-banner{
+    text-align:center;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:color-mix(in srgb, var(--cream) 55%, transparent);
+    border-top:1px solid color-mix(in srgb, var(--cream) 15%, transparent);
+    padding-top:1.2rem;
+  }
+  .demo-banner strong{color:var(--accent);}
+
+  /* mobile quick-action bar */
+  .mobile-bar{
+    display:none;
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:var(--paper);
+    border-top:1px solid var(--line);
+    box-shadow:0 -10px 24px -14px rgba(0,0,0,0.25);
+  }
+  .mobile-bar-inner{
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+  }
+  .mobile-bar a{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:0.15rem;padding:0.65rem 0.4rem;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.02em;
+    color:var(--ink-soft);
+    border-right:1px solid var(--line);
+  }
+  .mobile-bar a:last-child{border-right:none;}
+  .mobile-bar a.primary{color:var(--accent);}
+  @media (max-width:760px){
+    .mobile-bar{display:block;}
+    body{padding-bottom:3.6rem;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <a href="#top" class="brand">MIX<span class="dot">FOOD</span></a>
+      <nav class="topnav">
+        <a href="#carta" data-i18n="nav.menu">Carta</a>
+        <a href="#horario" data-i18n="nav.hours">Horario</a>
+        <a href="#opiniones" data-i18n="nav.reviews">Opiniones</a>
+        <a href="#contacto" data-i18n="nav.directions">Cómo llegar</a>
+      </nav>
+      <div class="topbar-right">
+        <div class="lang-switch" role="group" aria-label="Idioma / Idioma / Language">
+          <button type="button" class="lang-btn active" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="ca">CA</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <a class="top-cta" href="tel:+34613975916" data-i18n="nav.cta">Pedir ahora</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero" id="top">
+    <div class="wrap hero-inner">
+      <p class="eyebrow" data-i18n="hero.eyebrow">Restaurante &amp; Cafetería · Barcelona</p>
+      <h1><span data-i18n="hero.title.pre">Pizzas, tacos y kebab</span> <em data-i18n="hero.title.em">halal</em> <span data-i18n="hero.title.post">de barrio.</span></h1>
+      <p class="lede" data-i18n="hero.lede">En Carrer de Santa Rosalia, 42 servimos comida rápida hecha con calma: hamburguesas a la plancha, döner recién cortado, café de cafetería de toda la vida y bollería recién horneada. Todo apto halal.</p>
+      <div class="hero-meta">
+        <span class="pill"><span class="dotlive"></span> <span data-i18n="hero.pill.open">Abierto ahora · hasta las 23:30</span></span>
+        <span class="pill" data-i18n="hero.pill.halal">100% Halal</span>
+        <span class="pill" data-i18n="hero.pill.delivery">Servicio a domicilio</span>
+        <span class="pill" data-i18n="hero.pill.access">Acceso sin escalones</span>
+      </div>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#pedir" data-i18n="hero.cta.order">Pedir online</a>
+        <a class="btn btn-ghost" href="#carta" data-i18n="hero.cta.menu">Ver la carta</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      <span data-i18n="cat.pizzas">Pizzas</span><span data-i18n="cat.tacos">Tacos</span><span data-i18n="cat.burgers">Hamburguesas</span><span data-i18n="cat.chicken">Pollo a l'Ast</span><span data-i18n="cat.kebab">Kebab</span><span data-i18n="cat.coffee">Café</span><span data-i18n="cat.pastry">Pastel</span>
+      <span data-i18n="cat.pizzas">Pizzas</span><span data-i18n="cat.tacos">Tacos</span><span data-i18n="cat.burgers">Hamburguesas</span><span data-i18n="cat.chicken">Pollo a l'Ast</span><span data-i18n="cat.kebab">Kebab</span><span data-i18n="cat.coffee">Café</span><span data-i18n="cat.pastry">Pastel</span>
+    </div>
+  </div>
+
+  <main>
+
+    <section id="sobre">
+      <div class="wrap">
+        <div class="about">
+          <p class="eyebrow" data-i18n="about.eyebrow">Nuestra historia</p>
+          <h2 class="display" style="font-size:clamp(1.6rem,3vw,2.1rem);text-transform:uppercase;margin-top:0.5rem;" data-i18n="about.heading">Cocina mixta, ambiente de barrio</h2>
+          <p data-i18n="about.body">Mixfood nació para juntar, bajo un mismo techo, todo lo que apetece a distintas horas del día: un café y un croissant por la mañana, un kebab o una pizza al mediodía, una hamburguesa doble por la noche. Cocina halal, ingredientes frescos y una plancha que no para.</p>
+          <div class="stat-row">
+            <div class="stat"><b>4.6★</b><span data-i18n="about.stat.google">en Google (80+ reseñas)</span></div>
+            <div class="stat"><b>7</b><span data-i18n="about.stat.days">días a la semana</span></div>
+            <div class="stat"><b>&lt;15</b><span data-i18n="about.stat.wait">min de espera media</span></div>
+          </div>
+          <div class="badges">
+            <span class="badge" data-i18n="about.badge.halal">Certificado Halal</span>
+            <span class="badge" data-i18n="about.badge.delivery">Delivery propio</span>
+            <span class="badge" data-i18n="about.badge.takeaway">Para llevar</span>
+            <span class="badge" data-i18n="about.badge.access">Entrada accesible</span>
+            <span class="badge" data-i18n="about.badge.card">Pago con tarjeta</span>
+          </div>
+          <p class="photo-note" data-i18n="about.photonote">Fotos del local y de los platos — próximamente.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="carta" style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow" data-i18n="menu.eyebrow">La carta</p>
+          <h2 data-i18n="menu.heading">Un poco de todo, bien hecho</h2>
+          <p data-i18n="menu.intro">Selección de la carta expuesta en el mostrador. Precios orientativos — consulta la carta completa en el local o por WhatsApp, ya que cambian según temporada.</p>
+        </div>
+
+        <div class="menu-grid">
+
+          <div class="menu-card">
+            <h3 data-i18n="menu.cat.burgers">Hamburguesas</h3>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.burger.classic.name">Clásica</span><span class="desc" data-i18n="menu.burger.classic.desc">Ternera, queso, lechuga y tomate</span></span>
+              <span class="price">3,95 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.burger.chicken.name">Chicken</span><span class="desc" data-i18n="menu.burger.chicken.desc">Pollo empanado, salsa de la casa</span></span>
+              <span class="price">3,95 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.burger.fish.name">Pescado</span><span class="desc" data-i18n="menu.burger.fish.desc">Merluza rebozada, salsa tártara</span></span>
+              <span class="price">3,95 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.burger.double.name">Doble</span><span class="desc" data-i18n="menu.burger.double.desc">Menú con bebida y patatas</span></span>
+              <span class="price">6,20 €</span>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <h3 data-i18n="menu.cat.kebab">Kebab &amp; shawarma</h3>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.kebab.classic.name">Kebab clásico</span><span class="desc" data-i18n="menu.kebab.classic.desc">Ternera y pollo, pan de pita</span></span>
+              <span class="price" data-i18n="menu.price.from6">desde 6,00 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.kebab.durum.name">Durum</span><span class="desc" data-i18n="menu.kebab.durum.desc">Enrollado, con patatas y salsas</span></span>
+              <span class="price" data-i18n="menu.price.from6">desde 6,00 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.kebab.menu.name">Menú kebab</span><span class="desc" data-i18n="menu.kebab.menu.desc">Con bebida y patatas fritas</span></span>
+              <span class="price">6,00 €</span>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <h3 data-i18n="menu.cat.pizza">Pizzas &amp; pollo a l'ast</h3>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.pizza.single.name">Pizza individual</span><span class="desc" data-i18n="menu.pizza.single.desc">Masa fina, horneada al momento</span></span>
+              <span class="price" data-i18n="menu.price.instore">precio en local</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.chicken.rotisserie.name">Pollo a l'ast</span><span class="desc" data-i18n="menu.chicken.rotisserie.desc">Al punto, entero o por cuartos</span></span>
+              <span class="price" data-i18n="menu.price.instore">precio en local</span>
+            </div>
+          </div>
+
+          <div class="menu-card">
+            <h3 data-i18n="menu.cat.coffee">Cafetería</h3>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.coffee.coffee.name">Café</span><span class="desc" data-i18n="menu.coffee.coffee.desc">Solo, cortado, con leche</span></span>
+              <span class="price" data-i18n="menu.price.from12">desde 1,20 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.coffee.croissant.name">Croissant</span><span class="desc" data-i18n="menu.coffee.croissant.desc">Recién horneado</span></span>
+              <span class="price" data-i18n="menu.price.from15">desde 1,50 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.coffee.juice.name">Zumo natural</span><span class="desc" data-i18n="menu.coffee.juice.desc">Naranja del día</span></span>
+              <span class="price" data-i18n="menu.price.from25">desde 2,50 €</span>
+            </div>
+            <div class="menu-item">
+              <span class="name"><span data-i18n="menu.coffee.pastry.name">Pastel / bocata</span><span class="desc" data-i18n="menu.coffee.pastry.desc">Vitrina de la cafetería</span></span>
+              <span class="price" data-i18n="menu.price.vitrine">precio en vitrina</span>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="menu-note" data-i18n="menu.note">Nota: los precios de pizza, pollo a l'ast y algunos pasteles varían según tamaño y se muestran en el mostrador — súbelos aquí en cuanto tengas la lista actualizada.</p>
+      </div>
+    </section>
+
+    <section id="horario">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow" data-i18n="info.eyebrow">Información práctica</p>
+          <h2 data-i18n="info.heading">Horario, contacto y ubicación</h2>
+        </div>
+        <div class="info-grid">
+
+          <div class="info-card">
+            <h3 data-i18n="info.hours.title">Horario</h3>
+            <div class="hours-row" data-day="1"><span data-i18n="day.mon">Lunes</span><span>9:00 – 23:30</span></div>
+            <div class="hours-row" data-day="2"><span data-i18n="day.tuefri">Martes – Viernes</span><span>8:30 – 23:30</span></div>
+            <div class="hours-row" data-day="6"><span data-i18n="day.sat">Sábado</span><span>8:30 – 00:00</span></div>
+            <div class="hours-row" data-day="0"><span data-i18n="day.sun">Domingo</span><span>8:30 – 00:00</span></div>
+            <p style="margin-top:0.9rem;color:var(--muted);font-size:0.82rem;" data-i18n="info.hours.note">Horario orientativo recogido de perfiles públicos del local — confírmalo antes de publicar.</p>
+          </div>
+
+          <div class="info-card">
+            <h3 data-i18n="info.directions.title">Cómo llegar</h3>
+            <p>Carrer de Santa Rosalia, 42<br>08035 Barcelona</p>
+            <p style="color:var(--muted);" data-i18n="info.directions.metro">A un paso de El Coll–La Teixonera (L5)</p>
+            <p style="margin-top:0.8rem;">
+              <a class="link" href="https://maps.app.goo.gl/PeQsG1KGAqkP6q8p7" target="_blank" rel="noopener" data-i18n="info.directions.maps">Ver en Google Maps →</a>
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3 data-i18n="info.contact.title">Contacto</h3>
+            <p><a class="link" href="tel:+34931874884">93 187 48 84</a> — <span data-i18n="info.contact.landline">local</span></p>
+            <p><a class="link" href="tel:+34613975916">613 97 59 16</a> — <span data-i18n="info.contact.mobile">móvil / WhatsApp</span></p>
+            <p style="margin-top:0.8rem;"><a class="link" href="https://instagram.com/mixfoodbcn" target="_blank" rel="noopener">@mixfoodbcn <span data-i18n="info.contact.ig">en Instagram →</span></a></p>
+          </div>
+
+        </div>
+
+        <div class="map-block">
+          <div class="map-frame">
+            <iframe
+              title="Mapa de Mixfood, Carrer de Santa Rosalia 42, Barcelona"
+              src="https://www.google.com/maps?q=Carrer+de+Santa+Rosalia+42+Barcelona&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="opiniones" style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+      <div class="wrap">
+        <div class="reviews-head" style="margin-bottom:2rem;">
+          <div>
+            <p class="eyebrow" data-i18n="reviews.eyebrow">Lo que dicen los clientes</p>
+            <h2 style="margin-top:0.5rem;" data-i18n="reviews.heading">Opiniones en Google</h2>
+          </div>
+          <div class="rating-badge">
+            <b>4.6</b>
+            <div>
+              <span class="stars">★★★★★</span>
+              <div style="font-size:0.82rem;color:var(--muted);" data-i18n="reviews.count">basado en 80+ reseñas</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-scroll">
+          <div class="review-card">
+            <span class="stars">★★★★★</span>
+            <p data-i18n="review1.text">"Sitio increíble, todo estaba buenísimo y muy limpio. Se nota el cuidado en cada plato."</p>
+            <footer>Oriol C. — Google</footer>
+          </div>
+          <div class="review-card">
+            <span class="stars">★★★★★</span>
+            <p data-i18n="review2.text">"Los tacos y el durum estaban deliciosos, con mucha carne y una salsa blanca espectacular. Servicio rápido y amable."</p>
+            <footer>Raquel M. — Google</footer>
+          </div>
+          <div class="review-card">
+            <span class="stars">★★★★★</span>
+            <p data-i18n="review3.text">"Excelente atención, local muy limpio y comida cuidada. Repetiremos seguro."</p>
+            <footer>Krizma — Google</footer>
+          </div>
+          <div class="review-card">
+            <span class="stars">★★★★★</span>
+            <p data-i18n="review4.text">"Buena relación calidad-precio y trato cercano. Perfecto para un almuerzo rápido en el barrio."</p>
+            <footer><span data-i18n="review4.author">Cliente habitual</span> — Google</footer>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pedir">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow" data-i18n="order.eyebrow">Reservas y pedidos</p>
+          <h2 data-i18n="order.heading">Pide para llevar o reserva mesa</h2>
+        </div>
+        <div class="social-order">
+
+          <div class="panel panel-dark">
+            <h3 data-i18n="order.panel1.title">Pedir online</h3>
+            <p class="muted" data-i18n="order.panel1.text">Llama o escríbenos por WhatsApp para encargar algo o reservar mesa — te respondemos al momento.</p>
+            <div class="panel-actions">
+              <a class="btn btn-primary" href="tel:+34613975916" data-i18n="order.panel1.call">Llamar ahora</a>
+              <a class="btn btn-ghost" href="https://wa.me/34613975916" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+            <p class="hint" data-i18n="order.panel1.hint">Próximamente: pedidos a través de tu plataforma de delivery habitual (Glovo, Uber Eats, Just Eat...).</p>
+          </div>
+
+          <div class="panel panel-outline">
+            <h3 data-i18n="order.panel2.title">Síguenos</h3>
+            <p style="color:var(--muted);" data-i18n="order.panel2.text">Novedades, platos del día y ofertas, directo desde el mostrador.</p>
+            <a class="ig-handle" href="https://instagram.com/mixfoodbcn" target="_blank" rel="noopener">
+              Instagram — @mixfoodbcn
+            </a>
+            <p class="hint"><span data-i18n="order.panel2.also">También puedes llamarnos o escribirnos por WhatsApp al</span> <a class="link" href="https://wa.me/34613975916" target="_blank" rel="noopener">613 97 59 16</a> <span data-i18n="order.panel2.reserve">para reservar mesa con antelación.</span></p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site" id="contacto">
+    <div class="wrap">
+      <div class="foot-top">
+        <a href="#top" class="brand">MIX<span class="dot">FOOD</span></a>
+        <div class="foot-links">
+          <a href="#carta" data-i18n="nav.menu">Carta</a>
+          <a href="#horario" data-i18n="nav.hours">Horario</a>
+          <a href="#opiniones" data-i18n="nav.reviews">Opiniones</a>
+          <a href="tel:+34613975916">613 97 59 16</a>
+        </div>
+      </div>
+      <p style="font-size:0.85rem;">Carrer de Santa Rosalia, 42 · 08035 Barcelona</p>
+      <div class="demo-banner">
+        <strong data-i18n="footer.demo">Esta es una versión de demostración</strong> — <span data-i18n="footer.demo.rest">textos, precios y horarios de ejemplo, pendientes de confirmar con el restaurante.</span>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="mobile-bar" aria-label="Acciones rápidas">
+    <div class="mobile-bar-inner">
+      <a href="tel:+34613975916" data-i18n="mobile.call">Llamar</a>
+      <a href="https://wa.me/34613975916" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="#pedir" class="primary" data-i18n="mobile.order">Pedir</a>
+    </div>
+  </nav>
+
+<script>
+(function(){
+  var translations = {
+    "nav.menu": {es:"Carta", ca:"Carta", en:"Menu"},
+    "nav.hours": {es:"Horario", ca:"Horari", en:"Hours"},
+    "nav.reviews": {es:"Opiniones", ca:"Opinions", en:"Reviews"},
+    "nav.directions": {es:"Cómo llegar", ca:"Com arribar", en:"Directions"},
+    "nav.cta": {es:"Pedir ahora", ca:"Demanar ara", en:"Order now"},
+
+    "hero.eyebrow": {es:"Restaurante & Cafetería · Barcelona", ca:"Restaurant & Cafeteria · Barcelona", en:"Restaurant & Café · Barcelona"},
+    "hero.title.pre": {es:"Pizzas, tacos y kebab", ca:"Pizzes, tacos i kebab", en:"Neighbourhood pizzas, tacos and"},
+    "hero.title.em": {es:"halal", ca:"halal", en:"halal"},
+    "hero.title.post": {es:"de barrio.", ca:"de barri.", en:"kebab."},
+    "hero.lede": {
+      es:"En Carrer de Santa Rosalia, 42 servimos comida rápida hecha con calma: hamburguesas a la plancha, döner recién cortado, café de cafetería de toda la vida y bollería recién horneada. Todo apto halal.",
+      ca:"Al carrer de Santa Rosalia, 42 servim menjar ràpid fet amb calma: hamburgueses a la planxa, döner tallat al moment, cafè de cafeteria de tota la vida i brioixeria acabada de fer. Tot apte halal.",
+      en:"At Carrer de Santa Rosalia, 42 we serve fast food made unhurried: grilled burgers, freshly carved döner, old-school café coffee and fresh-baked pastries. Everything halal."
+    },
+    "hero.pill.open": {es:"Abierto ahora · hasta las 23:30", ca:"Obert ara · fins a les 23:30", en:"Open now · until 23:30"},
+    "hero.pill.halal": {es:"100% Halal", ca:"100% Halal", en:"100% Halal"},
+    "hero.pill.delivery": {es:"Servicio a domicilio", ca:"Servei a domicili", en:"Home delivery"},
+    "hero.pill.access": {es:"Acceso sin escalones", ca:"Accés sense esglaons", en:"Step-free access"},
+    "hero.cta.order": {es:"Pedir online", ca:"Demanar online", en:"Order online"},
+    "hero.cta.menu": {es:"Ver la carta", ca:"Veure la carta", en:"View the menu"},
+
+    "cat.pizzas": {es:"Pizzas", ca:"Pizzes", en:"Pizzas"},
+    "cat.tacos": {es:"Tacos", ca:"Tacos", en:"Tacos"},
+    "cat.burgers": {es:"Hamburguesas", ca:"Hamburgueses", en:"Burgers"},
+    "cat.chicken": {es:"Pollo a l'Ast", ca:"Pollastre a l'ast", en:"Rotisserie chicken"},
+    "cat.kebab": {es:"Kebab", ca:"Kebab", en:"Kebab"},
+    "cat.coffee": {es:"Café", ca:"Cafè", en:"Coffee"},
+    "cat.pastry": {es:"Pastel", ca:"Pastisseria", en:"Pastries"},
+
+    "about.eyebrow": {es:"Nuestra historia", ca:"La nostra història", en:"Our story"},
+    "about.heading": {es:"Cocina mixta, ambiente de barrio", ca:"Cuina mixta, ambient de barri", en:"Mixed kitchen, neighbourhood feel"},
+    "about.body": {
+      es:"Mixfood nació para juntar, bajo un mismo techo, todo lo que apetece a distintas horas del día: un café y un croissant por la mañana, un kebab o una pizza al mediodía, una hamburguesa doble por la noche. Cocina halal, ingredientes frescos y una plancha que no para.",
+      ca:"Mixfood va néixer per ajuntar, sota un mateix sostre, tot el que apeteix a diferents hores del dia: un cafè i un croissant al matí, un kebab o una pizza al migdia, una hamburguesa doble a la nit. Cuina halal, ingredients frescos i una planxa que no para.",
+      en:"Mixfood was born to bring together, under one roof, whatever you fancy at any hour: coffee and a croissant in the morning, a kebab or pizza at noon, a double burger at night. Halal cooking, fresh ingredients, and a grill that never stops."
+    },
+    "about.stat.google": {es:"en Google (80+ reseñas)", ca:"a Google (80+ ressenyes)", en:"on Google (80+ reviews)"},
+    "about.stat.days": {es:"días a la semana", ca:"dies a la setmana", en:"days a week"},
+    "about.stat.wait": {es:"min de espera media", ca:"min d'espera mitjana", en:"min average wait"},
+    "about.badge.halal": {es:"Certificado Halal", ca:"Certificat Halal", en:"Halal certified"},
+    "about.badge.delivery": {es:"Delivery propio", ca:"Repartiment propi", en:"Own delivery"},
+    "about.badge.takeaway": {es:"Para llevar", ca:"Per emportar", en:"Takeaway"},
+    "about.badge.access": {es:"Entrada accesible", ca:"Entrada accessible", en:"Accessible entrance"},
+    "about.badge.card": {es:"Pago con tarjeta", ca:"Pagament amb targeta", en:"Card payment"},
+    "about.photonote": {es:"Fotos del local y de los platos — próximamente.", ca:"Fotos del local i dels plats — properament.", en:"Photos of the venue and dishes — coming soon."},
+
+    "menu.eyebrow": {es:"La carta", ca:"La carta", en:"The menu"},
+    "menu.heading": {es:"Un poco de todo, bien hecho", ca:"Una mica de tot, ben fet", en:"A bit of everything, done right"},
+    "menu.intro": {
+      es:"Selección de la carta expuesta en el mostrador. Precios orientativos — consulta la carta completa en el local o por WhatsApp, ya que cambian según temporada.",
+      ca:"Selecció de la carta exposada al taulell. Preus orientatius — consulta la carta completa al local o per WhatsApp, ja que canvien segons la temporada.",
+      en:"A selection from the menu on display at the counter. Prices are indicative — check the full menu in-store or on WhatsApp, as they change seasonally."
+    },
+    "menu.cat.burgers": {es:"Hamburguesas", ca:"Hamburgueses", en:"Burgers"},
+    "menu.burger.classic.name": {es:"Clásica", ca:"Clàssica", en:"Classic"},
+    "menu.burger.classic.desc": {es:"Ternera, queso, lechuga y tomate", ca:"Vedella, formatge, enciam i tomàquet", en:"Beef, cheese, lettuce and tomato"},
+    "menu.burger.chicken.name": {es:"Chicken", ca:"Chicken", en:"Chicken"},
+    "menu.burger.chicken.desc": {es:"Pollo empanado, salsa de la casa", ca:"Pollastre arrebossat, salsa de la casa", en:"Breaded chicken, house sauce"},
+    "menu.burger.fish.name": {es:"Pescado", ca:"Peix", en:"Fish"},
+    "menu.burger.fish.desc": {es:"Merluza rebozada, salsa tártara", ca:"Lluç arrebossat, salsa tàrtara", en:"Battered hake, tartar sauce"},
+    "menu.burger.double.name": {es:"Doble", ca:"Doble", en:"Double"},
+    "menu.burger.double.desc": {es:"Menú con bebida y patatas", ca:"Menú amb beguda i patates", en:"Meal with drink and fries"},
+
+    "menu.cat.kebab": {es:"Kebab & shawarma", ca:"Kebab i xawarma", en:"Kebab & shawarma"},
+    "menu.kebab.classic.name": {es:"Kebab clásico", ca:"Kebab clàssic", en:"Classic kebab"},
+    "menu.kebab.classic.desc": {es:"Ternera y pollo, pan de pita", ca:"Vedella i pollastre, pa de pita", en:"Beef and chicken, pita bread"},
+    "menu.kebab.durum.name": {es:"Durum", ca:"Durum", en:"Durum wrap"},
+    "menu.kebab.durum.desc": {es:"Enrollado, con patatas y salsas", ca:"Enrotllat, amb patates i salses", en:"Rolled, with fries and sauces"},
+    "menu.kebab.menu.name": {es:"Menú kebab", ca:"Menú kebab", en:"Kebab meal"},
+    "menu.kebab.menu.desc": {es:"Con bebida y patatas fritas", ca:"Amb beguda i patates fregides", en:"With drink and fries"},
+
+    "menu.cat.pizza": {es:"Pizzas & pollo a l'ast", ca:"Pizzes i pollastre a l'ast", en:"Pizzas & rotisserie chicken"},
+    "menu.pizza.single.name": {es:"Pizza individual", ca:"Pizza individual", en:"Individual pizza"},
+    "menu.pizza.single.desc": {es:"Masa fina, horneada al momento", ca:"Massa fina, cuita al moment", en:"Thin crust, baked to order"},
+    "menu.chicken.rotisserie.name": {es:"Pollo a l'ast", ca:"Pollastre a l'ast", en:"Rotisserie chicken"},
+    "menu.chicken.rotisserie.desc": {es:"Al punto, entero o por cuartos", ca:"Al punt, sencer o a quarts", en:"Roasted just right, whole or quartered"},
+
+    "menu.cat.coffee": {es:"Cafetería", ca:"Cafeteria", en:"Café"},
+    "menu.coffee.coffee.name": {es:"Café", ca:"Cafè", en:"Coffee"},
+    "menu.coffee.coffee.desc": {es:"Solo, cortado, con leche", ca:"Sol, tallat, amb llet", en:"Black, macchiato, or with milk"},
+    "menu.coffee.croissant.name": {es:"Croissant", ca:"Croissant", en:"Croissant"},
+    "menu.coffee.croissant.desc": {es:"Recién horneado", ca:"Acabat de fer", en:"Freshly baked"},
+    "menu.coffee.juice.name": {es:"Zumo natural", ca:"Suc natural", en:"Fresh juice"},
+    "menu.coffee.juice.desc": {es:"Naranja del día", ca:"Taronja del dia", en:"Orange, squeezed daily"},
+    "menu.coffee.pastry.name": {es:"Pastel / bocata", ca:"Pastís / entrepà", en:"Cake / sandwich"},
+    "menu.coffee.pastry.desc": {es:"Vitrina de la cafetería", ca:"Vitrina de la cafeteria", en:"From the café counter"},
+
+    "menu.price.from6": {es:"desde 6,00 €", ca:"des de 6,00 €", en:"from €6.00"},
+    "menu.price.from12": {es:"desde 1,20 €", ca:"des d'1,20 €", en:"from €1.20"},
+    "menu.price.from15": {es:"desde 1,50 €", ca:"des d'1,50 €", en:"from €1.50"},
+    "menu.price.from25": {es:"desde 2,50 €", ca:"des de 2,50 €", en:"from €2.50"},
+    "menu.price.instore": {es:"precio en local", ca:"preu al local", en:"price in-store"},
+    "menu.price.vitrine": {es:"precio en vitrina", ca:"preu a la vitrina", en:"price at the counter"},
+    "menu.note": {
+      es:"Nota: los precios de pizza, pollo a l'ast y algunos pasteles varían según tamaño y se muestran en el mostrador — súbelos aquí en cuanto tengas la lista actualizada.",
+      ca:"Nota: els preus de la pizza, el pollastre a l'ast i alguns pastissos varien segons la mida i es mostren al taulell — actualitza'ls aquí quan tinguis la llista definitiva.",
+      en:"Note: pizza, rotisserie chicken and some pastry prices vary by size and are shown at the counter — update this once you have the final list."
+    },
+
+    "info.eyebrow": {es:"Información práctica", ca:"Informació pràctica", en:"Practical information"},
+    "info.heading": {es:"Horario, contacto y ubicación", ca:"Horari, contacte i ubicació", en:"Hours, contact & location"},
+    "info.hours.title": {es:"Horario", ca:"Horari", en:"Hours"},
+    "info.hours.note": {es:"Horario orientativo recogido de perfiles públicos del local — confírmalo antes de publicar.", ca:"Horari orientatiu recollit de perfils públics del local — confirma'l abans de publicar.", en:"Indicative hours gathered from public listings — confirm before publishing."},
+    "day.mon": {es:"Lunes", ca:"Dilluns", en:"Monday"},
+    "day.tuefri": {es:"Martes – Viernes", ca:"Dimarts – Divendres", en:"Tuesday – Friday"},
+    "day.sat": {es:"Sábado", ca:"Dissabte", en:"Saturday"},
+    "day.sun": {es:"Domingo", ca:"Diumenge", en:"Sunday"},
+    "info.directions.title": {es:"Cómo llegar", ca:"Com arribar", en:"Directions"},
+    "info.directions.metro": {es:"A un paso de El Coll–La Teixonera (L5)", ca:"A tocar d'El Coll–La Teixonera (L5)", en:"Steps from El Coll–La Teixonera (L5)"},
+    "info.directions.maps": {es:"Ver en Google Maps →", ca:"Veure a Google Maps →", en:"View on Google Maps →"},
+    "info.contact.title": {es:"Contacto", ca:"Contacte", en:"Contact"},
+    "info.contact.landline": {es:"local", ca:"local", en:"landline"},
+    "info.contact.mobile": {es:"móvil / WhatsApp", ca:"mòbil / WhatsApp", en:"mobile / WhatsApp"},
+    "info.contact.ig": {es:"en Instagram →", ca:"a Instagram →", en:"on Instagram →"},
+
+    "reviews.eyebrow": {es:"Lo que dicen los clientes", ca:"El que diuen els clients", en:"What customers say"},
+    "reviews.heading": {es:"Opiniones en Google", ca:"Opinions a Google", en:"Google reviews"},
+    "reviews.count": {es:"basado en 80+ reseñas", ca:"basat en 80+ ressenyes", en:"based on 80+ reviews"},
+    "review1.text": {
+      es:"\"Sitio increíble, todo estaba buenísimo y muy limpio. Se nota el cuidado en cada plato.\"",
+      ca:"\"Lloc increïble, tot estava boníssim i molt net. Es nota la cura en cada plat.\"",
+      en:"\"Amazing place, everything was great and spotless. You can tell they care about every dish.\""
+    },
+    "review2.text": {
+      es:"\"Los tacos y el durum estaban deliciosos, con mucha carne y una salsa blanca espectacular. Servicio rápido y amable.\"",
+      ca:"\"Els tacos i el durum estaven deliciosos, amb molta carn i una salsa blanca espectacular. Servei ràpid i amable.\"",
+      en:"\"The tacos and durum were delicious, generous on meat with a fantastic white sauce. Quick, friendly service.\""
+    },
+    "review3.text": {
+      es:"\"Excelente atención, local muy limpio y comida cuidada. Repetiremos seguro.\"",
+      ca:"\"Excel·lent atenció, local molt net i menjar cuidat. Hi tornarem segur.\"",
+      en:"\"Excellent service, a very clean spot and carefully made food. We'll definitely be back.\""
+    },
+    "review4.text": {
+      es:"\"Buena relación calidad-precio y trato cercano. Perfecto para un almuerzo rápido en el barrio.\"",
+      ca:"\"Bona relació qualitat-preu i tracte proper. Perfecte per a un dinar ràpid al barri.\"",
+      en:"\"Great value and a friendly welcome. Perfect for a quick lunch in the neighbourhood.\""
+    },
+    "review4.author": {es:"Cliente habitual", ca:"Client habitual", en:"Regular customer"},
+
+    "order.eyebrow": {es:"Reservas y pedidos", ca:"Reserves i comandes", en:"Bookings & orders"},
+    "order.heading": {es:"Pide para llevar o reserva mesa", ca:"Demana per emportar o reserva taula", en:"Order takeaway or book a table"},
+    "order.panel1.title": {es:"Pedir online", ca:"Demanar online", en:"Order online"},
+    "order.panel1.text": {es:"Llama o escríbenos por WhatsApp para encargar algo o reservar mesa — te respondemos al momento.", ca:"Truca'ns o escriu-nos per WhatsApp per encarregar alguna cosa o reservar taula — et responem a l'instant.", en:"Call or message us on WhatsApp to place an order or book a table — we reply right away."},
+    "order.panel1.call": {es:"Llamar ahora", ca:"Trucar ara", en:"Call now"},
+    "order.panel1.hint": {es:"Próximamente: pedidos a través de tu plataforma de delivery habitual (Glovo, Uber Eats, Just Eat...).", ca:"Properament: comandes a través de la teva plataforma de repartiment habitual (Glovo, Uber Eats, Just Eat...).", en:"Coming soon: ordering through your usual delivery platform (Glovo, Uber Eats, Just Eat...)."},
+    "order.panel2.title": {es:"Síguenos", ca:"Segueix-nos", en:"Follow us"},
+    "order.panel2.text": {es:"Novedades, platos del día y ofertas, directo desde el mostrador.", ca:"Novetats, plats del dia i ofertes, directes des del taulell.", en:"News, daily specials and offers, straight from the counter."},
+    "order.panel2.also": {es:"También puedes llamarnos o escribirnos por WhatsApp al", ca:"També ens pots trucar o escriure per WhatsApp al", en:"You can also call or WhatsApp us at"},
+    "order.panel2.reserve": {es:"para reservar mesa con antelación.", ca:"per reservar taula amb antelació.", en:"to book a table ahead of time."},
+
+    "footer.demo": {es:"Esta es una versión de demostración", ca:"Aquesta és una versió de demostració", en:"This is a demo version"},
+    "footer.demo.rest": {es:"textos, precios y horarios de ejemplo, pendientes de confirmar con el restaurante.", ca:"textos, preus i horaris d'exemple, pendents de confirmar amb el restaurant.", en:"sample text, prices and hours, pending confirmation with the restaurant."},
+
+    "mobile.call": {es:"Llamar", ca:"Trucar", en:"Call"},
+    "mobile.order": {es:"Pedir", ca:"Demanar", en:"Order"},
+
+    "meta.title": {es:"Mixfood — Restaurante & Cafetería", ca:"Mixfood — Restaurant & Cafeteria", en:"Mixfood — Restaurant & Café"}
+  };
+
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if(translations[key] && translations[key][lang] !== undefined){
+        el.textContent = translations[key][lang];
+      }
+    });
+    document.querySelectorAll(".lang-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+    document.title = translations["meta.title"][lang];
+    try{ localStorage.setItem("mixfood-lang", lang); }catch(e){}
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){ setLang(btn.getAttribute("data-lang")); });
+  });
+
+  var saved = null;
+  try{ saved = localStorage.getItem("mixfood-lang"); }catch(e){}
+  setLang(saved && translations["meta.title"][saved] ? saved : "es");
+
+  var todayIndex = new Date().getDay();
+  document.querySelectorAll(".hours-row").forEach(function(row){
+    var day = row.getAttribute("data-day");
+    var isToday = (day === "1" && todayIndex === 1) ||
+                  (day === "2" && todayIndex >= 2 && todayIndex <= 5) ||
+                  (day === "6" && todayIndex === 6) ||
+                  (day === "0" && todayIndex === 0);
+    row.classList.toggle("today", isToday);
+  });
+})();
+</script>
+
+</body>
+</html>
