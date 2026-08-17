@@ -124,6 +124,7 @@
   .top-cta:hover{background:var(--accent-deep);}
 
   @media (max-width:760px){ .topnav{display:none;} }
+  @media (max-width:560px){ .top-cta{display:none;} }
 
   /* ---------- hero ---------- */
   .hero{
@@ -211,7 +212,7 @@
   .strip span::after{content:"•";margin-left:1.6rem;opacity:.5;}
   @keyframes scroll{
     from{transform:translateX(0);}
-    to{transform:translateX(-50%);}
+    to{transform:translateX(-16.6667%);}
   }
   @media (prefers-reduced-motion: reduce){
     .strip-track{animation:none;}
@@ -327,6 +328,34 @@
   .hint{margin-top:1rem;font-size:0.8rem;color:var(--muted);}
   .panel-dark .hint{color:color-mix(in srgb, var(--cream) 55%, transparent);}
 
+  /* reservation form */
+  .reserve-form{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 0.8fr auto;
+    gap:1rem;
+    align-items:end;
+  }
+  @media (max-width:900px){
+    .reserve-form{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:520px){
+    .reserve-form{grid-template-columns:1fr;}
+  }
+  .reserve-form .field{display:flex;flex-direction:column;gap:0.4rem;}
+  .reserve-form label{
+    font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);
+  }
+  .reserve-form input{
+    font:inherit;font-size:1rem;
+    padding:0.7rem 0.85rem;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--cream);
+    color:var(--ink);
+  }
+  .reserve-form input:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .reserve-submit{width:100%;border:0;cursor:pointer;font:inherit;}
+
   .ig-handle{
     display:inline-flex;align-items:center;gap:0.5rem;
     margin-top:1.2rem;font-weight:700;color:var(--accent);
@@ -390,6 +419,47 @@
     .mobile-bar{display:block;}
     body{padding-bottom:3.6rem;}
   }
+
+  /* ---------- mobile text & layout pass ---------- */
+  @media (max-width:600px){
+    body{font-size:0.96rem;}
+    .wrap{padding:0 1.1rem;}
+    .brand{font-size:1.02rem;}
+    .hero .eyebrow{font-size:0.66rem;letter-spacing:0.14em;}
+    .hero h1{font-size:clamp(2.1rem,9vw,2.7rem);line-height:1.04;}
+    .hero p.lede{font-size:0.98rem;}
+    .hero-meta{gap:0.5rem;}
+    .pill{font-size:0.78rem;padding:0.36rem 0.7rem;}
+    .hero-ctas{gap:0.6rem;}
+    .btn{padding:0.8rem 1.2rem;font-size:0.9rem;}
+    .strip span{padding:0.5rem 1.1rem;font-size:0.76rem;}
+    .strip span::after{margin-left:1.1rem;}
+    .section-head h2{font-size:1.5rem;}
+    .section-head p{font-size:0.94rem;}
+    .stat-row{gap:0.7rem;}
+    .stat b{font-size:1.25rem;}
+    .stat span{font-size:0.74rem;}
+    .badge{font-size:0.72rem;padding:0.35rem 0.7rem;}
+    .menu-card h3{font-size:0.95rem;}
+    .menu-item .name{font-size:0.94rem;}
+    .menu-item .desc{font-size:0.8rem;}
+    .menu-item .price{font-size:0.88rem;}
+    .info-card{padding:1.25rem;}
+    .info-card h3{font-size:0.95rem;}
+    .info-card p{font-size:0.88rem;}
+    .rating-badge b{font-size:1.8rem;}
+    .review-card{padding:1.15rem;}
+    .review-card p{font-size:0.9rem;}
+    .panel{padding:1.4rem;}
+    .panel h3{font-size:1.1rem;}
+    .panel p{font-size:0.9rem;}
+    .foot-top{gap:0.8rem;}
+    .foot-links{gap:1rem;font-size:0.82rem;}
+    .demo-banner{font-size:0.7rem;}
+  }
+
+  /* prevent iOS auto-zoom on form fields */
+  .reserve-form input{font-size:16px;}
 </style>
 </head>
 <body>
@@ -433,10 +503,7 @@
   </header>
 
   <div class="strip" aria-hidden="true">
-    <div class="strip-track">
-      <span data-i18n="cat.pizzas">Pizzas</span><span data-i18n="cat.tacos">Tacos</span><span data-i18n="cat.burgers">Hamburguesas</span><span data-i18n="cat.chicken">Pollo a l'Ast</span><span data-i18n="cat.kebab">Kebab</span><span data-i18n="cat.coffee">Café</span><span data-i18n="cat.pastry">Pastel</span>
-      <span data-i18n="cat.pizzas">Pizzas</span><span data-i18n="cat.tacos">Tacos</span><span data-i18n="cat.burgers">Hamburguesas</span><span data-i18n="cat.chicken">Pollo a l'Ast</span><span data-i18n="cat.kebab">Kebab</span><span data-i18n="cat.coffee">Café</span><span data-i18n="cat.pastry">Pastel</span>
-    </div>
+    <div class="strip-track" id="strip-track"></div>
   </div>
 
   <main>
@@ -668,6 +735,37 @@
       </div>
     </section>
 
+    <section id="reservar" style="background:var(--paper);border-top:1px solid var(--line);">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow" data-i18n="reserve.eyebrow">Reserva de mesa</p>
+          <h2 data-i18n="reserve.heading">Resérvanos tu mesa</h2>
+          <p data-i18n="reserve.intro">Rellena tus datos y te lo enviamos por WhatsApp — te confirmamos la disponibilidad al momento.</p>
+        </div>
+
+        <form class="reserve-form" id="reserve-form">
+          <div class="field">
+            <label for="r-name" data-i18n="reserve.name">Nombre</label>
+            <input type="text" id="r-name" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="r-date" data-i18n="reserve.date">Fecha</label>
+            <input type="date" id="r-date" name="date" required>
+          </div>
+          <div class="field">
+            <label for="r-time" data-i18n="reserve.time">Hora</label>
+            <input type="time" id="r-time" name="time" required>
+          </div>
+          <div class="field">
+            <label for="r-people" data-i18n="reserve.people">Personas</label>
+            <input type="number" id="r-people" name="people" min="1" max="20" value="2" required>
+          </div>
+          <button type="submit" class="btn btn-primary reserve-submit" data-i18n="reserve.submit">Enviar solicitud</button>
+        </form>
+        <p class="hint" data-i18n="reserve.note">Al enviar se abrirá WhatsApp con tu solicitud ya redactada — solo tienes que confirmarla.</p>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site" id="contacto">
@@ -854,13 +952,31 @@
     "footer.demo": {es:"Esta es una versión de demostración", ca:"Aquesta és una versió de demostració", en:"This is a demo version"},
     "footer.demo.rest": {es:"textos, precios y horarios de ejemplo, pendientes de confirmar con el restaurante.", ca:"textos, preus i horaris d'exemple, pendents de confirmar amb el restaurant.", en:"sample text, prices and hours, pending confirmation with the restaurant."},
 
+    "reserve.eyebrow": {es:"Reserva de mesa", ca:"Reserva de taula", en:"Table booking"},
+    "reserve.heading": {es:"Resérvanos tu mesa", ca:"Reserva'ns la teva taula", en:"Book your table"},
+    "reserve.intro": {es:"Rellena tus datos y te lo enviamos por WhatsApp — te confirmamos la disponibilidad al momento.", ca:"Omple les teves dades i t'ho enviem per WhatsApp — et confirmem la disponibilitat a l'instant.", en:"Fill in your details and we'll send it over WhatsApp — we confirm availability right away."},
+    "reserve.name": {es:"Nombre", ca:"Nom", en:"Name"},
+    "reserve.date": {es:"Fecha", ca:"Data", en:"Date"},
+    "reserve.time": {es:"Hora", ca:"Hora", en:"Time"},
+    "reserve.people": {es:"Personas", ca:"Persones", en:"Guests"},
+    "reserve.submit": {es:"Enviar solicitud", ca:"Enviar sol·licitud", en:"Send request"},
+    "reserve.note": {es:"Al enviar se abrirá WhatsApp con tu solicitud ya redactada — solo tienes que confirmarla.", ca:"En enviar s'obrirà el WhatsApp amb la teva sol·licitud ja redactada — només l'has de confirmar.", en:"Sending opens WhatsApp with your request already drafted — just confirm it."},
+    "reserve.msg": {
+      es:"Hola Mixfood, querría reservar mesa.\nNombre: {name}\nFecha: {date}\nHora: {time}\nPersonas: {people}",
+      ca:"Hola Mixfood, voldria reservar taula.\nNom: {name}\nData: {date}\nHora: {time}\nPersones: {people}",
+      en:"Hi Mixfood, I'd like to book a table.\nName: {name}\nDate: {date}\nTime: {time}\nGuests: {people}"
+    },
+
     "mobile.call": {es:"Llamar", ca:"Trucar", en:"Call"},
     "mobile.order": {es:"Pedir", ca:"Demanar", en:"Order"},
 
     "meta.title": {es:"Mixfood — Restaurante & Cafetería", ca:"Mixfood — Restaurant & Cafeteria", en:"Mixfood — Restaurant & Café"}
   };
 
+  var currentLang = "es";
+
   function setLang(lang){
+    currentLang = lang;
     document.documentElement.lang = lang;
     document.querySelectorAll("[data-i18n]").forEach(function(el){
       var key = el.getAttribute("data-i18n");
@@ -878,6 +994,43 @@
   document.querySelectorAll(".lang-btn").forEach(function(btn){
     btn.addEventListener("click", function(){ setLang(btn.getAttribute("data-lang")); });
   });
+
+  // Build the category marquee with enough repeats that it always overflows
+  // the viewport before it loops (avoids a blank gap on wide screens).
+  var categoryKeys = ["cat.pizzas","cat.tacos","cat.burgers","cat.chicken","cat.kebab","cat.coffee","cat.pastry"];
+  var stripTrack = document.getElementById("strip-track");
+  if(stripTrack){
+    var stripHtml = "";
+    for(var rep = 0; rep < 6; rep++){
+      categoryKeys.forEach(function(key){
+        stripHtml += '<span data-i18n="' + key + '"></span>';
+      });
+    }
+    stripTrack.innerHTML = stripHtml;
+  }
+
+  // Reservation form -> opens WhatsApp with the request pre-filled.
+  var reserveForm = document.getElementById("reserve-form");
+  if(reserveForm){
+    var dateInput = document.getElementById("r-date");
+    if(dateInput){
+      dateInput.min = new Date().toISOString().split("T")[0];
+    }
+    reserveForm.addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var name = document.getElementById("r-name").value.trim();
+      var date = document.getElementById("r-date").value;
+      var time = document.getElementById("r-time").value;
+      var people = document.getElementById("r-people").value;
+      var template = translations["reserve.msg"][currentLang] || translations["reserve.msg"].es;
+      var message = template
+        .replace("{name}", name)
+        .replace("{date}", date)
+        .replace("{time}", time)
+        .replace("{people}", people);
+      window.open("https://wa.me/34613975916?text=" + encodeURIComponent(message), "_blank", "noopener");
+    });
+  }
 
   var saved = null;
   try{ saved = localStorage.getItem("mixfood-lang"); }catch(e){}
